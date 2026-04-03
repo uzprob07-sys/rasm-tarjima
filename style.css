@@ -1,0 +1,6 @@
+body { font-family: sans-serif; background: #f4f4f9; display: flex; justify-content: center; padding: 20px; }
+.container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 800px; text-align: center; }
+.controls { margin: 20px 0; }
+.result-area { display: flex; gap: 20px; text-align: left; margin-top: 20px; }
+.box { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-height: 100px; background: #fafafa; }
+#status { margin-top: 15px; color: blue; font-weight: bold; }

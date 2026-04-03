@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rasm Tarjimon</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Rasm ichidagi matnni tarjima qilish</h1>
+        
+        <input type="file" id="imageInput" accept="image/*">
+        <div class="controls">
+            <select id="targetLang">
+                <option value="uz">O'zbekcha</option>
+                <option value="en">Inglizcha</option>
+                <option value="ru">Ruscha</option>
+            </select>
+            <button onclick="processImage()">Tarjima qilish</button>
+        </div>
+
+        <div class="result-area">
+            <div class="box">
+                <h3>Asl matn:</h3>
+                <p id="extractedText">Rasm yuklang...</p>
+            </div>
+            <div class="box">
+                <h3>Tarjima:</h3>
+                <p id="translatedText">...</p>
+            </div>
+        </div>
+        <div id="status">Tayyor.</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
