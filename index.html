@@ -3,37 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rasm Tarjimon</title>
+    <title>Rasm Tarjimon v2.0</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Rasm ichidagi matnni tarjima qilish</h1>
+        <h1>📸 Rasm ichidagi matnni tarjima qilish</h1>
         
-        <input type="file" id="imageInput" accept="image/*">
-        <div class="controls">
+        <div class="upload-section">
+            <input type="file" id="imageInput" accept="image/*">
             <select id="targetLang">
                 <option value="uz">O'zbekcha</option>
                 <option value="en">Inglizcha</option>
                 <option value="ru">Ruscha</option>
             </select>
-            <button onclick="processImage()">Tarjima qilish</button>
+            <button onclick="processImage()" id="btnTranslate">Tarjima qilish</button>
         </div>
+
+        <div id="status">Tayyor. Rasm yuklang.</div>
 
         <div class="result-area">
             <div class="box">
-                <h3>Asl matn:</h3>
-                <p id="extractedText">Rasm yuklang...</p>
+                <h3>🔍 Aniqlangan matn:</h3>
+                <div id="extractedText" class="text-display">...</div>
             </div>
             <div class="box">
-                <h3>Tarjima:</h3>
-                <p id="translatedText">...</p>
+                <h3>🌐 Tarjima:</h3>
+                <div id="translatedText" class="text-display">...</div>
             </div>
         </div>
-        <div id="status">Tayyor.</div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>

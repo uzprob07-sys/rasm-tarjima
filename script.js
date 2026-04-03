@@ -4,55 +4,63 @@ async function processImage() {
     const extractedTextDiv = document.getElementById('extractedText');
     const translatedTextDiv = document.getElementById('translatedText');
     const targetLang = document.getElementById('targetLang').value;
+    const btn = document.getElementById('btnTranslate');
 
     if (imageInput.files.length === 0) {
-        alert("Iltimos, rasm tanlang!");
+        alert("Iltimos, avval rasm tanlang!");
         return;
     }
 
-    status.innerText = "🔍 Matn o'qilmoqda...";
+    // Jarayon boshlandi
+    btn.disabled = true;
+    status.innerText = "⏳ Matn aniqlanmoqda (bu 10-20 soniya olishi mumkin)...";
     status.style.color = "blue";
-    
+    extractedTextDiv.innerText = "Yuklanmoqda...";
+    translatedTextDiv.innerText = "...";
+
     const image = imageInput.files[0];
 
     try {
-        // 1. OCR orqali matnni o'qish
-        const result = await Tesseract.recognize(image, 'eng+rus');
-        let text = result.data.text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        // 1. Tesseract orqali matnni o'qish
+        const worker = await Tesseract.createWorker('eng+rus');
+        const ret = await worker.recognize(image);
+        let rawText = ret.data.text.trim();
+        await worker.terminate();
 
-        if (!text) {
-            status.innerText = "❌ Rasmdan matn topilmadi.";
-            status.style.color = "red";
-            extractedTextDiv.innerText = "Bo'sh.";
-            return;
+        if (!rawText) {
+            throw new Error("Rasmdan matn topilmadi.");
         }
 
-        extractedTextDiv.innerText = text;
+        // Matnni tozalash
+        let cleanText = rawText.replace(/\s+/g, ' ').trim();
+        extractedTextDiv.innerText = cleanText;
+
+        // 2. Tarjima qilish
         status.innerText = "🌐 Tarjima qilinmoqda...";
-
-        // 2. Tarjima qilish (Muqobil va barqaror URL)
-        const apiUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
         
-        const response = await fetch(apiUrl);
+        // Google Translate uchun muqobil (CORS xatosini chetlab o'tish uchun)
+        const translateUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(cleanText)}`;
         
-        if (!response.ok) throw new Error("Tarjima xizmati javob bermadi");
-
+        const response = await fetch(translateUrl);
         const data = await response.json();
         
-        let translatedText = "";
+        let result = "";
         if (data && data[0]) {
-            data[0].forEach(part => {
-                if (part[0]) translatedText += part[0];
+            data[0].forEach(item => {
+                if (item[0]) result += item[0];
             });
         }
 
-        translatedTextDiv.innerText = translatedText;
-        status.innerText = "✅ Bajarildi!";
+        translatedTextDiv.innerText = result;
+        status.innerText = "✅ Muvaffaqiyatli yakunlandi!";
         status.style.color = "green";
 
     } catch (error) {
-        console.error("Xatolik tafsiloti:", error);
-        status.innerText = "⚠️ Xatolik: Internet yoki xizmatda muammo.";
+        console.error(error);
+        status.innerText = "❌ Xatolik: " + error.message;
         status.style.color = "red";
+        extractedTextDiv.innerText = "Xato yuz berdi.";
+    } finally {
+        btn.disabled = false;
     }
 }
